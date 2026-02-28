@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>山西运城·永乐宫旧址 | 天下第一纯阳宫</title>
+  <!-- Font Awesome 6 图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: '华文楷体', 'KaiTi', '宋体', 'SimSun', 'Times New Roman', serif;
+      background: #1c1610;
+      min-height: 100vh;
+      color: #e8dccc;
+      line-height: 1.7;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    #dynamic-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+      display: block;
+    }
+
+    .texture-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        repeating-linear-gradient(45deg, rgba(200, 180, 150, 0.02) 0px, rgba(200, 180, 150, 0.02) 2px, transparent 2px, transparent 6px),
+        repeating-linear-gradient(135deg, rgba(170, 140, 100, 0.02) 0px, rgba(170, 140, 100, 0.02) 2px, transparent 2px, transparent 6px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 2rem auto;
+      padding: 2rem 2.5rem;
+      background-color: rgba(20, 16, 12, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid #8b7355;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px #5f4d38 inset;
+      border-radius: 40px 12px 40px 12px;
+    }
+
+    /* 顶部栏 */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #5f4d38;
+    }
+
+    .datetime {
+      color: #dbbc94;
+      letter-spacing: 1px;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .top-links a {
+      color: #e6c9a2;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-bottom: 1px dotted transparent;
+      font-size: 1.2rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      background-color: transparent;
+      cursor: default;
+    }
+
+    .top-links a:hover {
+      color: #1c1610;
+      background-color: #dbbc94;
+      border-bottom-color: #dbbc94;
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(219, 188, 148, 0.3);
+      font-weight: bold;
+    }
+
+    /* 当前页面选中状态样式 */
+    .top-links a.active {
+      color: #1c1610;
+      background-color: #dbbc94;
+      border-bottom-color: #dbbc94;
+      font-weight: bold;
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(219, 188, 148, 0.3);
+    }
+
+    .header {
+      text-align: center;
+      padding: 2rem 1rem 1.8rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #5f4d38;
+      border-top: 2px solid #5f4d38;
+      background: rgba(0,0,0,0.2);
+      border-radius: 100px 20px 100px 20px;
+    }
+
+    .subhead-top {
+      font-size: 1rem;
+      letter-spacing: 6px;
+      color: #c9ad8b;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px #000;
+    }
+
+    h1 {
+      font-size: clamp(3.5rem, 12vw, 6rem);
+      font-weight: normal;
+      color: #eedcc7;
+      text-shadow: 4px 4px 0 #3f2e1d, 0 0 15px #a77b4f;
+      margin: 0.2rem 0;
+      letter-spacing: 4px;
+    }
+
+    .pure-yang {
+      font-size: clamp(1.5rem, 5vw, 2.8rem);
+      font-weight: normal;
+      color: #dbbc94;
+      margin: 0.2rem 0 1rem;
+      letter-spacing: 6px;
+      border-bottom: 1px dashed #8b7355;
+      display: inline-block;
+      padding-bottom: 0.3rem;
+    }
+
+    .site-badge {
+      background: #2d241c;
+      color: #e6d2b8;
+      padding: 0.5rem 2.2rem;
+      display: inline-block;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      margin: 1rem auto 0.5rem;
+      border: 1px solid #8b7355;
+      box-shadow: 0 6px 0 #1f1711;
+    }
+
+    .chop-seal {
+      display: inline-block;
+      border: 2px solid #b37b4c;
+      color: #b37b4c;
+      padding: 0.2rem 1.2rem;
+      border-radius: 40px 8px 40px 8px;
+      background: rgba(0,0,0,0.3);
+      font-size: 0.9rem;
+      margin-left: 0.8rem;
+      transform: rotate(-1deg);
+    }
+
+    .header-desc {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      margin-top: 1.8rem;
+    }
+
+    .header-desc span {
+      background: #2f271f;
+      border: 1px solid #6b553b;
+      padding: 0.4rem 1.4rem;
+      border-radius: 40px;
+      font-size: 0.95rem;
+      color: #e2ccb2;
+      box-shadow: inset 0 -2px 0 #1f1711;
+    }
+
+    .intro {
+      background: rgba(30, 24, 19, 0.7);
+      padding: 2rem 2.5rem;
+      border-radius: 60px 16px 60px 16px;
+      margin: 2.5rem 0;
+      border-left: 6px solid #b69062;
+      border-right: 6px solid #b69062;
+      font-size: 1.15rem;
+      color: #eadbc7;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .intro strong {
+      color: #e6c9a2;
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-size: 2.6rem;
+      font-weight: normal;
+      text-align: center;
+      color: #eedbc2;
+      margin: 3rem 0 2rem;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      text-shadow: 2px 2px 0 #2a1f15;
+    }
+
+    .section-title:before, .section-title:after {
+      content: "⚘";
+      font-size: 2.2rem;
+      color: #b69062;
+      opacity: 0.9;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .card {
+      background: rgba(28, 22, 18, 0.8);
+      backdrop-filter: blur(4px);
+      border: 1px solid #7a6246;
+      border-radius: 48px 12px 48px 12px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 12px 24px -8px rgba(0,0,0,0.5), 0 0 0 1px #5f4a32 inset;
+      transition: all 0.3s ease;
+      text-align: center;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      border-color: #b69062;
+      box-shadow: 0 18px 30px -8px #000, 0 0 0 2px #b69062 inset;
+    }
+
+    .card-icon {
+      font-size: 2.8rem;
+      color: #dbbc94;
+      background: #2f271f;
+      width: 90px;
+      height: 90px;
+      line-height: 90px;
+      border-radius: 50% 20% 50% 20%;
+      margin: 0 auto 1.2rem;
+      border: 1px solid #8b6f50;
+      box-shadow: 0 8px 0 #1f1711;
+    }
+
+    .card h3 {
+      font-size: 2rem;
+      font-weight: normal;
+      color: #eed7ba;
+      border-bottom: 2px dotted #7a6246;
+      padding-bottom: 0.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .card p {
+      text-align: left;
+      color: #dacbb6;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card p i {
+      color: #b69062;
+      width: 22px;
+    }
+
+    .feature-banner {
+      background: rgba(20, 16, 12, 0.8);
+      border-radius: 80px 16px 80px 16px;
+      padding: 2rem 2rem;
+      margin: 3rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-around;
+      border: 1px solid #7a6246;
+      box-shadow: 0 8px 0 #2f241c;
+    }
+
+    .feature-item {
+      text-align: center;
+      flex: 1 1 140px;
+      padding: 0.5rem;
+    }
+
+    .feature-item .num {
+      font-size: 3rem;
+      font-weight: normal;
+      color: #e6c9a2;
+      line-height: 1.1;
+      text-shadow: 2px 2px 0 #2f1f12;
+    }
+
+    .feature-item .label {
+      font-size: 1.1rem;
+      color: #dbbc94;
+      border-top: 1px solid #6b553b;
+      padding-top: 0.5rem;
+      margin-top: 0.3rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .gallery-item {
+      background: rgba(30, 24, 19, 0.7);
+      border-radius: 36px 8px 36px 8px;
+      padding: 1rem;
+      border: 1px solid #6b553b;
+      box-shadow: 0 8px 0 #2a1f17;
+      transition: 0.2s ease;
+    }
+
+    .gallery-item:hover {
+      border-color: #b69062;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 0 #2f241c;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 24px 4px 24px 4px;
+      border: 2px solid #5f4a32;
+      background: #2f271f;
+      display: block;
+    }
+
+    @media (max-width: 600px) {
+      .gallery-item img {
+        height: 150px;
+      }
+    }
+
+    .info-panel {
+      display: flex;
+      flex-wrap: wrap;
+      background: rgba(20, 16, 12, 0.7);
+      border-radius: 60px 12px 60px 12px;
+      overflow: hidden;
+      margin: 2.5rem 0;
+      border: 1px solid #7a6246;
+      backdrop-filter: blur(4px);
+    }
+
+    .info-map {
+      flex: 1 1 250px;
+      background: #2f271f;
+      min-height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e6d2b8;
+      font-size: 1.3rem;
+      text-align: center;
+      padding: 1rem;
+      border-right: 1px solid #6b553b;
+    }
+
+    .info-detail {
+      flex: 2 1 400px;
+      padding: 2rem 2.2rem;
+    }
+
+    .info-detail h4 {
+      font-size: 2.2rem;
+      font-weight: normal;
+      color: #eed7ba;
+      margin-bottom: 1.5rem;
+      border-left: 6px solid #b69062;
+      padding-left: 1rem;
+    }
+
+    .info-detail li {
+      margin: 1rem 0;
+      border-bottom: 1px solid #5f4d38;
+      padding-bottom: 0.6rem;
+      list-style: none;
+      color: #dacbb6;
+      display: flex;
+      align-items: center;
+    }
+
+    .info-detail i {
+      color: #b69062;
+      width: 2rem;
+      font-size: 1.2rem;
+    }
+
+    .flex-double {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 2.5rem 0;
+    }
+    .flex-double > div {
+      background: rgba(28, 22, 18, 0.6);
+      border-radius: 40px 12px 40px 12px;
+      padding: 1.8rem;
+      border: 1px solid #6b553b;
+      backdrop-filter: blur(4px);
+    }
+    .flex-double h3 {
+      font-size: 2rem;
+      font-weight: normal;
+      color: #eed7ba;
+      margin-bottom: 1rem;
+    }
+    .flex-double h3 i {
+      color: #b69062;
+    }
+
+    .poem-classic {
+      background: rgba(20, 16, 12, 0.7);
+      border-radius: 120px 20px 120px 20px;
+      padding: 2rem 2.5rem;
+      text-align: center;
+      margin: 2rem 0;
+      border: 1px solid #8b7355;
+      font-size: 1.3rem;
+      color: #eadbc7;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 8px 0 #2f241c;
+    }
+
+    .poem-classic span {
+      font-size: 2.8rem;
+      color: #b69062;
+      line-height: 0;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding: 2rem;
+      border-top: 3px double #6b553b;
+      color: #dac09e;
+      background: rgba(20, 16, 12, 0.6);
+      border-radius: 80px 80px 30px 30px;
+      backdrop-filter: blur(4px);
+    }
+
+    .footer .inscription {
+      font-size: 1.6rem;
+      color: #eed7ba;
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.2rem;
+      }
+      .section-title {
+        font-size: 2rem;
+      }
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .top-links {
+        justify-content: flex-start;
+        gap: 1rem;
+      }
+      .datetime {
+        font-size: 1.1rem;
+      }
+      .top-links a {
+        font-size: 1rem;
+        padding: 0.2rem 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="dynamic-bg"></canvas>
+  <div class="texture-overlay"></div>
+
+  <div class="container">
+    <!-- 顶部栏：添加主页链接，并设为选中状态 -->
+    <div class="top-bar">
+      <div class="datetime" id="liveDatetime"></div>
+      <div class="top-links">
+        <a href="index.html" class="active">主页</a>
+        <a href="maps.html">地图查看</a>
+        <a href="bestgoods.html">道家好物推荐</a>
+        <a href="videodata.html">视频资料</a>
+        <a href="about.html">关于网站</a>
+      </div>
+    </div>
+
+    <div class="header">
+      <div class="subhead-top">⚘ 敕建大纯阳万寿宫 · 旧址 ⚘</div>
+      <h1>永 乐 宫 旧 址</h1>
+      <div class="pure-yang">天 下 第 一 纯 阳 宫</div>
+      <div class="site-badge">
+        <i class="fa-solid fa-map-pin"></i> 原址·山西运城芮城县永乐镇 <span class="chop-seal">吕祖故里</span>
+      </div>
+      <div class="header-desc">
+        <span><i class="fa-regular fa-calendar"></i> 创建于元定宗二年 (1247年)</span>
+        <span><i class="fa-solid fa-dragon"></i> 全真三大祖庭之一</span>
+        <span><i class="fa-solid fa-paintbrush"></i> 东方艺术画廊·壁画1005㎡</span>
+        <span><i class="fa-solid fa-landmark"></i> 1961年首批国保</span>
+      </div>
+    </div>
+
+    <div class="intro">
+      <i class="fa-solid fa-feather-point fa-fw"></i> <strong>天下第一纯阳宫</strong>，原名大纯阳万寿宫，位于山西省芮城县永乐镇，因供奉八仙之一吕洞宾而建。唐末即在其故宅建吕公祠，金代改祠为观，元太宗后三年（1244年）毁于大火。蒙古时期全真教得势，由丘处机弟子宋德方首倡、潘德冲主持，于1247年动工重建，敕令升观为宫，进封吕洞宾为“天尊”。工程历时百余年，至1358年最终完成，几乎与元代相始终。宫内现存元代壁画1005.68平方米，三清殿《朝元图》286位神祇为中国古代壁画巅峰，与北京白云观、陕西重阳宫并称<strong>“全真道教三大祖庭”</strong>。
+    </div>
+
+    <div class="section-title">纯 阳 祖 庭 · 殿 宇 精 华</div>
+    <div class="card-grid">
+      <div class="card"><div class="card-icon"><i class="fa-solid fa-pagoda"></i></div><h3>三清殿 · 朝元图</h3><p><i class="fa-regular fa-star"></i> 主殿又称无极殿，面阔七间，元代官式建筑典范。殿内壁画《朝元图》绘于泰定二年（1325年），面积403.34平方米，画面高4.26米，全长94.68米。</p><p><i class="fa-regular fa-gem"></i> 共绘神祇286尊，主像高达3米，构图严谨，线条流畅，为元代壁画最高成就。河南洛阳马君祥等人绘制。</p></div>
+      <div class="card"><div class="card-icon"><i class="fa-solid fa-yin-yang"></i></div><h3>纯阳殿 · 帝君本迹</h3><p><i class="fa-regular fa-scroll"></i> 又名混成殿、吕祖殿，面阔五间。殿内壁画《纯阳帝君神游显化图》共52幅，面积203平方米，绘于至正十八年（1358年）。</p><p><i class="fa-regular fa-hand-peace"></i> 描绘吕洞宾一生事迹，神龛背面《钟吕谈道图》为全宫人物画之冠。作者为朱好古门人张遵礼等。</p></div>
+      <div class="card"><div class="card-icon"><i class="fa-solid fa-tiger"></i></div><h3>龙虎殿 · 重阳殿</h3><p><i class="fa-regular fa-flag"></i> 龙虎殿又称无极门，建于至元三十一年（1294年），殿内壁画青龙白虎及神吏26尊。重阳殿又名七真殿，供奉王重阳及七真，壁画49幅157平方米。两殿均为元代原构。</p><p><i class="fa-regular fa-mountain"></i> 重阳殿连环画描绘全真教创教故事，为研究全真道史重要资料。</p></div>
+      <div class="card"><div class="card-icon"><i class="fa-solid fa-truck"></i></div><h3>搬迁奇迹 · 旧址重生</h3><p><i class="fa-regular fa-clock"></i> 1956年因三门峡水利工程，国务院决定整体搬迁。1959-1966年历时十年，将1005平方米壁画分割300余块，建筑编号复建至20公里外芮城县城北龙泉村。</p><p><i class="fa-regular fa-building-columns"></i> 周恩来总理指示不惜代价保护，开创世界壁画整体迁移先河，被日本学者誉为“不亚于埃及神壁移筑”。</p></div>
+    </div>
+
+    <div class="feature-banner">
+      <div class="feature-item"><span class="num">1005㎡</span> <span class="label">元代壁画总面积</span></div>
+      <div class="feature-item"><span class="num">286</span> <span class="label">朝元图神祇</span></div>
+      <div class="feature-item"><span class="num">52</span> <span class="label">吕祖连环画</span></div>
+      <div class="feature-item"><span class="num">49</span> <span class="label">重阳殿故事</span></div>
+      <div class="feature-item"><span class="num">300+</span> <span class="label">壁画搬迁块数</span></div>
+    </div>
+
+    <div class="section-title">旧 址 光 影 · 图 录</div>
+    <div class="gallery-grid">
+      <div class="gallery-item"><img src="image/1.png" alt="三清殿朝元图太乙真人局部" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/2.png" alt="三清殿朝元图捧珊瑚玉女" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/3.png" alt="纯阳殿吕祖黄粱梦觉壁画" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/4.png" alt="纯阳殿钟离权度吕洞宾图" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/5.png" alt="龙虎殿青龙君像" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/6.png" alt="重阳殿王重阳授徒图" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/7.png" alt="三清殿琉璃鸱吻" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/8.png" alt="1959年壁画揭取现场" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/9.png" alt="迁建后的龙虎殿" loading="lazy"></div>
+      <div class="gallery-item"><img src="image/10.png" alt="元代雕花石础" loading="lazy"></div>
+    </div>
+
+    <div class="flex-double">
+      <div style="flex:1 1 280px;">
+        <h3><i class="fa-solid fa-archway"></i> 原址·永乐镇招贤村</h3>
+        <p>天下第一纯阳宫原址位于芮城县城西20公里永乐镇招贤村，唐为河中府永乐县，宋熙宁三年改镇。这里前临黄河，背倚条山，是吕洞宾诞生地。1959年因三门峡水库，原址没于水下，全部精华构建迁至新址。</p>
+        <p style="color: #dbbc94; margin-top:0.5rem;"><i class="fa-solid fa-water"></i> 旧址怀想 · 黄河日夜流，纯阳万古存。</p>
+      </div>
+      <div style="flex:2 1 380px;">
+        <h3><i class="fa-regular fa-building"></i> 今址·芮城古魏城</h3>
+        <p>迁建后的永乐宫位于芮城县城北3公里古魏城遗址，距原址约22公里。中轴线依次为明代宫门、龙虎殿、三清殿、纯阳殿、重阳殿，完全按原布局复建。所有壁画、琉璃、雕花石础皆为元代原物。1961年列为首批国保，1998年列入世界遗产预备名录，2025年金元道教文献入选《中国档案文献遗产名录》。</p>
+        <p style="margin-top:0.5rem;"><i class="fa-regular fa-eye"></i> 今日纯阳宫，可近距离瞻仰七百年前画师笔下的神仙世界。</p>
+      </div>
+    </div>
+
+    <div class="info-panel">
+      <div class="info-map"><div><i class="fa-solid fa-map-location-dot fa-3x"></i><br>山西省 · 运城市<br>芮城县 古魏镇<br><span style="font-size:1rem;">(原址永乐镇西22公里)</span></div></div>
+      <div class="info-detail">
+        <h4><i class="fa-solid fa-circle-info"></i> 纯阳宫访古指南</h4>
+        <ul>
+          <li><i class="fa-regular fa-clock"></i> 开放时间：08:00 - 18:00 (最后入园17:30)</li>
+          <li><i class="fa-regular fa-ticket"></i> 门票：全价60元，学生/老人半价 (具体以景区公告为准)</li>
+          <li><i class="fa-regular fa-compass"></i> 交通：运城中心站乘“运城—芮城”大巴至县城，打车3公里即达</li>
+          <li><i class="fa-regular fa-message"></i> 特色讲解：每日10:00、15:00讲述纯阳宫传奇与壁画故事</li>
+        </ul>
+        <div style="margin-top: 1.2rem; background: #2f271f; border-radius: 40px; padding: 0.6rem 1.2rem; color: #e6d2b8; border:1px solid #6b553b;"><i class="fa-regular fa-heart"></i> 殿内禁止拍摄壁画，请用双眼记录纯阳宫神灵之美</div>
+      </div>
+    </div>
+
+    <div class="poem-classic">
+      <span>“</span> 往去今来二十年，惊呼吕祖已乔迁。数遍天神三百六，不残不缺尽开颜。<span>”</span>
+      <div style="margin-top:0.8rem; font-size:1.1rem;">—— 阎丽川教授题永乐宫迁建</div>
+      <div style="margin-top:0.5rem; font-size:1rem; color:#dbbc94;">永乐三清铁画钩，曹衣吴带兼刚柔。唐宋遗风满壁是，堪称天下第一流。</div>
+    </div>
+
+    <div class="footer">
+      <div class="inscription"><i class="fa-regular fa-tree"></i> 永乐宫旧址 · 天下第一纯阳宫 <i class="fa-regular fa-tree"></i></div>
+      <p>山河迁改，纯阳永镇 · 世界壁画保护的丰碑 · 吕祖故里</p>
+      <small>© 2025 山西运城·永乐宫旧址 | 天下第一纯阳宫 · 古韵深色</small><br>
+      <small>本页面为文化展示，图片均为示意，欢迎亲临瞻礼</small>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const canvas = document.getElementById('dynamic-bg');
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let time = 0;
+
+      function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      const particles = [];
+      const PARTICLE_COUNT = 30;
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.15 + 0.02,
+          baseRadius: 150 + Math.random() * 250,
+          radius: 150 + Math.random() * 250,
+          baseOpacity: 0.08 + Math.random() * 0.12,
+          opacity: 0.08 + Math.random() * 0.12,
+          phase: Math.random() * 100,
+          color: `rgba(210, 175, 130, `,
+        });
+      }
+
+      const darkParticles = [];
+      const DARK_COUNT = 12;
+      for (let i = 0; i < DARK_COUNT; i++) {
+        darkParticles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.15,
+          vy: (Math.random() - 0.5) * 0.08,
+          baseRadius: 200 + Math.random() * 300,
+          radius: 200 + Math.random() * 300,
+          baseOpacity: 0.04 + Math.random() * 0.06,
+          opacity: 0.04 + Math.random() * 0.06,
+          phase: Math.random() * 100,
+          color: `rgba(80, 70, 60, `,
+        });
+      }
+
+      const sparkles = [];
+      const SPARKLE_COUNT = 40;
+      for (let i = 0; i < SPARKLE_COUNT; i++) {
+        sparkles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.1,
+          vy: (Math.random() - 0.5) * 0.05,
+          size: 1 + Math.random() * 3,
+          opacity: 0.1 + Math.random() * 0.2,
+          phase: Math.random() * 100,
+        });
+      }
+
+      function drawParticles() {
+        time += 0.02;
+
+        ctx.clearRect(0, 0, width, height);
+
+        darkParticles.forEach(p => {
+          p.radius = p.baseRadius * (0.9 + 0.1 * Math.sin(time * 1.5 + p.phase));
+          p.opacity = p.baseOpacity * (0.8 + 0.2 * Math.sin(time * 1.2 + p.phase));
+
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < -p.radius) p.x = width + p.radius;
+          if (p.x > width + p.radius) p.x = -p.radius;
+          if (p.y < -p.radius) p.y = height + p.radius;
+          if (p.y > height + p.radius) p.y = -p.radius;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+          ctx.fillStyle = p.color + p.opacity + ')';
+          ctx.filter = 'blur(45px)';
+          ctx.fill();
+        });
+
+        particles.forEach(p => {
+          p.radius = p.baseRadius * (0.85 + 0.15 * Math.sin(time * 1.8 + p.phase));
+          p.opacity = p.baseOpacity * (0.7 + 0.3 * Math.sin(time * 2.0 + p.phase));
+
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < -p.radius) p.x = width + p.radius;
+          if (p.x > width + p.radius) p.x = -p.radius;
+          if (p.y < -p.radius) p.y = height + p.radius;
+          if (p.y > height + p.radius) p.y = -p.radius;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+          const gradient = ctx.createRadialGradient(p.x, p.y, p.radius*0.3, p.x, p.y, p.radius);
+          gradient.addColorStop(0, `rgba(230, 200, 160, ${p.opacity*1.3})`);
+          gradient.addColorStop(1, `rgba(160, 130, 100, ${p.opacity*0.5})`);
+          ctx.fillStyle = gradient;
+          ctx.filter = 'blur(55px)';
+          ctx.fill();
+        });
+
+        ctx.filter = 'blur(3px)';
+        sparkles.forEach(s => {
+          let sparkleOpacity = s.opacity * (0.6 + 0.4 * Math.sin(time * 3 + s.phase));
+          s.x += s.vx;
+          s.y += s.vy;
+          if (s.x < 0) s.x = width;
+          if (s.x > width) s.x = 0;
+          if (s.y < 0) s.y = height;
+          if (s.y > height) s.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, 2 * Math.PI);
+          ctx.fillStyle = `rgba(240, 220, 180, ${sparkleOpacity})`;
+          ctx.fill();
+        });
+        ctx.filter = 'none';
+
+        requestAnimationFrame(drawParticles);
+      }
+
+      drawParticles();
+
+      function getWeekday(date) {
+        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        return weekdays[date.getDay()];
+      }
+
+      function getShichen(date) {
+        const hour = date.getHours();
+        if (hour >= 23 || hour < 1) return '子时';
+        if (hour >= 1 && hour < 3) return '丑时';
+        if (hour >= 3 && hour < 5) return '寅时';
+        if (hour >= 5 && hour < 7) return '卯时';
+        if (hour >= 7 && hour < 9) return '辰时';
+        if (hour >= 9 && hour < 11) return '巳时';
+        if (hour >= 11 && hour < 13) return '午时';
+        if (hour >= 13 && hour < 15) return '未时';
+        if (hour >= 15 && hour < 17) return '申时';
+        if (hour >= 17 && hour < 19) return '酉时';
+        if (hour >= 19 && hour < 21) return '戌时';
+        if (hour >= 21 && hour < 23) return '亥时';
+      }
+
+      function updateDateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const weekday = getWeekday(now);
+        const shichen = getShichen(now);
+        const datetimeStr = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds} ${weekday} ${shichen}`;
+        document.getElementById('liveDatetime').textContent = datetimeStr;
+      }
+
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+    })();
+  </script>
+</body>
+</html>
