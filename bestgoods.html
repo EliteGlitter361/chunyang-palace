@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>道家好物推荐 | 天下第一纯阳宫</title>
+  <!-- Font Awesome 6 图标库 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: '华文楷体', 'KaiTi', '宋体', 'SimSun', 'Times New Roman', serif;
+      background: #1c1610;
+      min-height: 100vh;
+      color: #e8dccc;
+      line-height: 1.7;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    #dynamic-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      pointer-events: none;
+      display: block;
+    }
+
+    .texture-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        repeating-linear-gradient(45deg, rgba(200, 180, 150, 0.02) 0px, rgba(200, 180, 150, 0.02) 2px, transparent 2px, transparent 6px),
+        repeating-linear-gradient(135deg, rgba(170, 140, 100, 0.02) 0px, rgba(170, 140, 100, 0.02) 2px, transparent 2px, transparent 6px);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 2rem auto;
+      padding: 2rem 2.5rem;
+      background-color: rgba(20, 16, 12, 0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid #8b7355;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px #5f4d38 inset;
+      border-radius: 40px 12px 40px 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid #5f4d38;
+    }
+
+    .datetime {
+      color: #dbbc94;
+      letter-spacing: 1px;
+      font-size: 1.25rem;
+      font-weight: bold;
+    }
+
+    .top-links {
+      display: flex;
+      gap: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .top-links a {
+      color: #e6c9a2;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-bottom: 1px dotted transparent;
+      font-size: 1.2rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      background-color: transparent;
+      cursor: pointer;
+    }
+
+    .top-links a:hover,
+    .top-links a.active {
+      color: #1c1610;
+      background-color: #dbbc94;
+      border-bottom-color: #dbbc94;
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(219, 188, 148, 0.3);
+      font-weight: bold;
+    }
+
+    .header {
+      text-align: center;
+      padding: 2rem 1rem 1.8rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #5f4d38;
+      border-top: 2px solid #5f4d38;
+      background: rgba(0,0,0,0.2);
+      border-radius: 100px 20px 100px 20px;
+    }
+
+    .subhead-top {
+      font-size: 1rem;
+      letter-spacing: 6px;
+      color: #c9ad8b;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px #000;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 10vw, 5rem);
+      font-weight: normal;
+      color: #eedcc7;
+      text-shadow: 4px 4px 0 #3f2e1d, 0 0 15px #a77b4f;
+      margin: 0.2rem 0;
+      letter-spacing: 4px;
+    }
+
+    .pure-yang {
+      font-size: clamp(1.5rem, 5vw, 2.8rem);
+      font-weight: normal;
+      color: #dbbc94;
+      margin: 0.2rem 0 1rem;
+      letter-spacing: 6px;
+      border-bottom: 1px dashed #8b7355;
+      display: inline-block;
+      padding-bottom: 0.3rem;
+    }
+
+    .goods-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .goods-card {
+      background: rgba(28, 22, 18, 0.8);
+      backdrop-filter: blur(4px);
+      border: 1px solid #7a6246;
+      border-radius: 48px 12px 48px 12px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 12px 24px -8px rgba(0,0,0,0.5), 0 0 0 1px #5f4a32 inset;
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .goods-card:hover {
+      transform: translateY(-4px);
+      border-color: #b69062;
+      box-shadow: 0 18px 30px -8px #000, 0 0 0 2px #b69062 inset;
+    }
+
+    .goods-card h3 {
+      font-size: 2rem;
+      font-weight: normal;
+      color: #eed7ba;
+      border-bottom: 2px dotted #7a6246;
+      padding-bottom: 0.8rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .goods-card h3 i {
+      color: #b69062;
+      font-size: 2rem;
+    }
+
+    .goods-card p {
+      color: #dacbb6;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .price {
+      color: #ff4d4d !important;
+      font-weight: bold !important;
+      font-family: 'Microsoft YaHei', '微软雅黑', sans-serif !important;
+      font-size: 1.5rem !important;
+      margin: 0.8rem 0 0.5rem 0 !important;
+      text-align: left !important;
+    }
+
+    .kuaishou-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: rgba(210, 180, 140, 0.15);
+      border: 1px solid #b69062;
+      border-radius: 48px;
+      padding: 0.6rem 1.2rem;
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      font-family: inherit;
+      color: #eed7ba;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      width: fit-content;
+      backdrop-filter: blur(2px);
+    }
+
+    .kuaishou-btn i {
+      font-size: 1.2rem;
+      color: #ffb347;
+    }
+
+    .kuaishou-btn:hover {
+      background: #b69062;
+      color: #1c1610;
+      border-color: #eed7ba;
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: rgba(0,0,0,0.3);
+      border-radius: 24px 8px 24px 8px;
+      overflow: hidden;
+      border: 1px solid #6b553b;
+      margin-top: 1rem;
+    }
+
+    .carousel-media {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .carousel-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      background: rgba(0,0,0,0.6);
+      color: #dbbc94;
+      border: 1px solid #b69062;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+      z-index: 2;
+    }
+
+    .carousel-arrow:hover {
+      background: #b69062;
+      color: #1c1610;
+    }
+
+    .carousel-arrow.left {
+      left: 10px;
+    }
+
+    .carousel-arrow.right {
+      right: 10px;
+    }
+
+    .carousel-index {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.6);
+      color: #dbbc94;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      border: 1px solid #b69062;
+    }
+
+    .qr-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      font-family: '华文楷体', 'KaiTi', '宋体', serif;
+    }
+
+    .qr-modal.active {
+      display: flex;
+    }
+
+    .qr-modal-content {
+      background: #2a231e;
+      border: 2px solid #b69062;
+      border-radius: 48px 16px 48px 16px;
+      max-width: 480px;
+      width: 90%;
+      padding: 1.8rem 1.8rem 2rem;
+      text-align: center;
+      box-shadow: 0 20px 35px rgba(0,0,0,0.6), 0 0 0 1px #7a5a3a inset;
+      position: relative;
+      animation: fadeScale 0.2s ease-out;
+    }
+
+    @keyframes fadeScale {
+      from {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .qr-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px dashed #b69062;
+      margin-bottom: 1.2rem;
+      padding-bottom: 0.6rem;
+    }
+
+    .qr-modal-header h3 {
+      font-size: 1.6rem;
+      color: #eed7ba;
+      font-weight: normal;
+      letter-spacing: 2px;
+    }
+
+    .close-modal {
+      font-size: 2rem;
+      cursor: pointer;
+      color: #dbbc94;
+      line-height: 1;
+      transition: 0.2s;
+    }
+
+    .close-modal:hover {
+      color: #ff8c42;
+      transform: scale(1.1);
+    }
+
+    .qr-image-container {
+      margin: 1rem 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 240px;
+    }
+
+    .qr-image-container img,
+    .qr-image-container canvas {
+      max-width: 100%;
+      width: 260px;
+      height: 260px;
+      object-fit: contain;
+      border-radius: 24px;
+      background: #fef5e7;
+      padding: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .qr-tip {
+      margin-top: 1rem;
+      color: #dbbc94;
+      font-size: 1rem;
+      background: rgba(0,0,0,0.4);
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      letter-spacing: 1px;
+    }
+
+    .qr-tip i {
+      margin-right: 6px;
+      color: #ffb347;
+    }
+
+    @media (max-width: 900px) {
+      .goods-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.2rem;
+      }
+      .top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .top-links {
+        justify-content: flex-start;
+        gap: 1rem;
+      }
+      .datetime {
+        font-size: 1.1rem;
+      }
+      .top-links a {
+        font-size: 1rem;
+        padding: 0.2rem 0.6rem;
+      }
+      h1 {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+      }
+      .price {
+        font-size: 1.3rem !important;
+      }
+      .qr-modal-content {
+        width: 92%;
+        padding: 1.2rem;
+        max-width: 420px;
+      }
+      .qr-image-container img,
+      .qr-image-container canvas {
+        width: 220px;
+        height: 220px;
+      }
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 4rem;
+      padding: 2rem;
+      border-top: 3px double #6b553b;
+      color: #dac09e;
+      background: rgba(20, 16, 12, 0.6);
+      border-radius: 80px 80px 30px 30px;
+      backdrop-filter: blur(4px);
+    }
+
+    .footer .inscription {
+      font-size: 1.6rem;
+      color: #eed7ba;
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="dynamic-bg"></canvas>
+  <div class="texture-overlay"></div>
+
+  <div class="container">
+    <div class="top-bar">
+      <div class="datetime" id="liveDatetime"></div>
+      <div class="top-links">
+        <a href="index.html">主页</a>
+        <a href="maps.html">地图查看</a>
+        <a href="bestgoods.html" class="active">道家好物推荐</a>
+        <a href="videodata.html">视频资料</a>
+        <a href="about.html">关于网站</a>
+      </div>
+    </div>
+
+    <div class="header">
+      <div class="subhead-top">⚘ 天下第一纯阳宫 · 法物流通 ⚘</div>
+      <h1>道 家 好 物 推 荐</h1>
+      <div class="pure-yang">纯 阳 祖 庭 · 福 泽 万 物</div>
+    </div>
+
+    <div class="goods-grid" id="goodsGrid"></div>
+
+    <div class="footer">
+      <div class="inscription"><i class="fa-regular fa-tree"></i> 永乐宫旧址 · 天下第一纯阳宫 <i class="fa-regular fa-tree"></i></div>
+      <p>山河迁改，纯阳永镇 · 世界壁画保护的丰碑 · 吕祖故里</p>
+      <small>© 2025 山西运城·永乐宫旧址 | 天下第一纯阳宫 · 古韵深色</small><br>
+      <small>本页面为文化展示，图片均为示意，欢迎亲临瞻礼</small>
+    </div>
+  </div>
+
+  <div id="qrModal" class="qr-modal">
+    <div class="qr-modal-content">
+      <div class="qr-modal-header">
+        <h3 id="modalGoodsTitle">扫码至快手购买</h3>
+        <span class="close-modal">&times;</span>
+      </div>
+      <div id="qrMediaContainer" class="qr-image-container"></div>
+      <div class="qr-tip">
+        <i class="fa-brands fa-snapchat"></i> 打开快手扫一扫 · 结缘法宝
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      function isMobile() {
+        return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      }
+      if (!isMobile()) {
+        const canvas = document.getElementById('dynamic-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let time = 0;
+
+        function resizeCanvas() {
+          width = window.innerWidth;
+          height = window.innerHeight;
+          canvas.width = width;
+          canvas.height = height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const particles = [];
+        const PARTICLE_COUNT = 30;
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+          particles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.25,
+            vy: (Math.random() - 0.5) * 0.15 + 0.02,
+            baseRadius: 150 + Math.random() * 250,
+            radius: 150 + Math.random() * 250,
+            baseOpacity: 0.08 + Math.random() * 0.12,
+            opacity: 0.08 + Math.random() * 0.12,
+            phase: Math.random() * 100,
+          });
+        }
+
+        const darkParticles = [];
+        const DARK_COUNT = 12;
+        for (let i = 0; i < DARK_COUNT; i++) {
+          darkParticles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.15,
+            vy: (Math.random() - 0.5) * 0.08,
+            baseRadius: 200 + Math.random() * 300,
+            radius: 200 + Math.random() * 300,
+            baseOpacity: 0.04 + Math.random() * 0.06,
+            opacity: 0.04 + Math.random() * 0.06,
+            phase: Math.random() * 100,
+          });
+        }
+
+        const sparkles = [];
+        const SPARKLE_COUNT = 40;
+        for (let i = 0; i < SPARKLE_COUNT; i++) {
+          sparkles.push({
+            x: Math.random() * width,
+            y: Math.random() * height,
+            vx: (Math.random() - 0.5) * 0.1,
+            vy: (Math.random() - 0.5) * 0.05,
+            size: 1 + Math.random() * 3,
+            opacity: 0.1 + Math.random() * 0.2,
+            phase: Math.random() * 100,
+          });
+        }
+
+        function drawParticles() {
+          time += 0.02;
+          ctx.clearRect(0, 0, width, height);
+
+          darkParticles.forEach(p => {
+            p.radius = p.baseRadius * (0.9 + 0.1 * Math.sin(time * 1.5 + p.phase));
+            p.opacity = p.baseOpacity * (0.8 + 0.2 * Math.sin(time * 1.2 + p.phase));
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < -p.radius) p.x = width + p.radius;
+            if (p.x > width + p.radius) p.x = -p.radius;
+            if (p.y < -p.radius) p.y = height + p.radius;
+            if (p.y > height + p.radius) p.y = -p.radius;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+            ctx.fillStyle = `rgba(80,70,60,${p.opacity})`;
+            ctx.filter = 'blur(45px)';
+            ctx.fill();
+          });
+
+          particles.forEach(p => {
+            p.radius = p.baseRadius * (0.85 + 0.15 * Math.sin(time * 1.8 + p.phase));
+            p.opacity = p.baseOpacity * (0.7 + 0.3 * Math.sin(time * 2.0 + p.phase));
+            p.x += p.vx;
+            p.y += p.vy;
+            if (p.x < -p.radius) p.x = width + p.radius;
+            if (p.x > width + p.radius) p.x = -p.radius;
+            if (p.y < -p.radius) p.y = height + p.radius;
+            if (p.y > height + p.radius) p.y = -p.radius;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, 2 * Math.PI);
+            const gradient = ctx.createRadialGradient(p.x, p.y, p.radius * 0.3, p.x, p.y, p.radius);
+            gradient.addColorStop(0, `rgba(230,200,160,${p.opacity * 1.3})`);
+            gradient.addColorStop(1, `rgba(160,130,100,${p.opacity * 0.5})`);
+            ctx.fillStyle = gradient;
+            ctx.filter = 'blur(55px)';
+            ctx.fill();
+          });
+
+          ctx.filter = 'blur(3px)';
+          sparkles.forEach(s => {
+            let sparkleOpacity = s.opacity * (0.6 + 0.4 * Math.sin(time * 3 + s.phase));
+            s.x += s.vx;
+            s.y += s.vy;
+            if (s.x < 0) s.x = width;
+            if (s.x > width) s.x = 0;
+            if (s.y < 0) s.y = height;
+            if (s.y > height) s.y = 0;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size, 0, 2 * Math.PI);
+            ctx.fillStyle = `rgba(240,220,180,${sparkleOpacity})`;
+            ctx.fill();
+          });
+          ctx.filter = 'none';
+          requestAnimationFrame(drawParticles);
+        }
+        drawParticles();
+      }
+    })();
+
+    (function() {
+      function getWeekday(date) {
+        const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+        return weekdays[date.getDay()];
+      }
+      function getShichen(date) {
+        const hour = date.getHours();
+        if (hour >= 23 || hour < 1) return '子时';
+        if (hour >= 1 && hour < 3) return '丑时';
+        if (hour >= 3 && hour < 5) return '寅时';
+        if (hour >= 5 && hour < 7) return '卯时';
+        if (hour >= 7 && hour < 9) return '辰时';
+        if (hour >= 9 && hour < 11) return '巳时';
+        if (hour >= 11 && hour < 13) return '午时';
+        if (hour >= 13 && hour < 15) return '未时';
+        if (hour >= 15 && hour < 17) return '申时';
+        if (hour >= 17 && hour < 19) return '酉时';
+        if (hour >= 19 && hour < 21) return '戌时';
+        return '亥时';
+      }
+      function updateDateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        const weekday = getWeekday(now);
+        const shichen = getShichen(now);
+        const datetimeStr = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds} ${weekday} ${shichen}`;
+        document.getElementById('liveDatetime').textContent = datetimeStr;
+      }
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+    })();
+
+    // 模拟二维码绘制函数 (古风占位，用于真实图片加载失败)
+    function drawMockQRCode(canvas, goodsTitle) {
+      const ctx = canvas.getContext('2d');
+      const size = 260;
+      canvas.width = size;
+      canvas.height = size;
+      ctx.fillStyle = '#fef5e7';
+      ctx.fillRect(0, 0, size, size);
+      
+      ctx.strokeStyle = '#8b5a2b';
+      ctx.lineWidth = 2;
+      const step = size / 8;
+      for (let i = 1; i < 8; i++) {
+        ctx.beginPath();
+        ctx.moveTo(i * step, 0);
+        ctx.lineTo(i * step, size);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, i * step);
+        ctx.lineTo(size, i * step);
+        ctx.stroke();
+      }
+      ctx.fillStyle = '#5d3a1a';
+      ctx.fillRect(12, 12, 42, 42);
+      ctx.fillRect(size-54, 12, 42, 42);
+      ctx.fillRect(12, size-54, 42, 42);
+      ctx.fillStyle = '#fef5e7';
+      ctx.fillRect(20, 20, 26, 26);
+      ctx.fillRect(size-46, 20, 26, 26);
+      ctx.fillRect(20, size-46, 26, 26);
+      
+      ctx.fillStyle = '#3e2a1b';
+      for (let i = 0; i < 160; i++) {
+        const x = 18 + Math.random() * (size - 36);
+        const y = 18 + Math.random() * (size - 36);
+        if ((x > 12 && x < 60 && y > 12 && y < 60) ||
+            (x > size-60 && x < size-12 && y > 12 && y < 60) ||
+            (x > 12 && x < 60 && y > size-60 && y < size-12)) continue;
+        ctx.fillRect(x, y, 3, 3);
+      }
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, 32, 0, 2*Math.PI);
+      ctx.fillStyle = '#d9c5a7';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(size/2, size/2, 32, 0, 2*Math.PI);
+      ctx.strokeStyle = '#b69062';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.fillStyle = '#8b5a2b';
+      ctx.beginPath();
+      ctx.arc(size/2, size/2-10, 10, 0, 2*Math.PI);
+      ctx.fill();
+      ctx.fillStyle = '#fef5e7';
+      ctx.beginPath();
+      ctx.arc(size/2, size/2+10, 10, 0, 2*Math.PI);
+      ctx.fill();
+      
+      ctx.font = "bold 16px '华文楷体', 'KaiTi'";
+      ctx.fillStyle = '#6b3f1c';
+      ctx.fillText("道", size/2-12, size/2+44);
+      ctx.fillText("法", size/2+8, size/2+44);
+      ctx.font = "12px 'KaiTi'";
+      ctx.fillStyle = '#8b5a2b';
+      ctx.fillText("快手示例码", size/2-44, size-20);
+    }
+
+    function fallbackToMockQR(goodsItem, container) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 260;
+      canvas.height = 260;
+      drawMockQRCode(canvas, goodsItem.title);
+      container.innerHTML = '';
+      container.appendChild(canvas);
+    }
+
+    // ========= 商品数据（完全恢复最初上传的图片配置） =========
+    const goodsData = [
+      {
+        id: 'yellowpaper',
+        title: '手写黄纸',
+        icon: 'fa-solid fa-scroll',
+        desc: '传统手工制作，天然竹浆，色泽古雅。适用于抄经、符咒、书画。每张均为手写质感，保留古法韵味。',
+        price: '59',
+        files: [ { name: 'yellowpaper.jpg', type: 'image' } ]
+      },
+      {
+        id: 'shanguimoney',
+        title: '合金铜古币 · 开元山鬼花钱',
+        icon: 'fa-solid fa-coins',
+        desc: '精仿宋代山鬼花钱，合金铜材质，直径45mm。正面“开元通宝”，背面山鬼符咒，辟邪招财，佩带把玩皆宜。',
+        price: '169',
+        files: (() => {
+          const arr = [];
+          arr.push({ name: '1.mp4', type: 'video' });
+          for (let i = 2; i <= 12; i++) {
+            arr.push({ name: `${i}.jpg`, type: 'image' });
+          }
+          return arr;
+        })()
+      },
+      {
+        id: 'pinganfu',
+        title: '天官赐福香包 · 平安福',
+        icon: 'fa-solid fa-bag-shopping',
+        desc: '手工布艺香包，内装天然艾草、朱砂等。正面刺绣“天官赐福”，背面为平安符。可悬挂于车内、床头，驱邪纳吉。',
+        price: '15',
+        files: [
+          { name: '1.jpg', type: 'image' },
+          { name: '2.jpg', type: 'image' },
+          { name: '3.jpg', type: 'image' },
+          { name: '4.jpg', type: 'image' },
+          { name: '5.jpg', type: 'image' }
+        ]
+      },
+      {
+        id: 'bracelet',
+        title: '静心手串 · 紫薇讳菩提手持',
+        icon: 'fa-solid fa-hand-fist',
+        desc: '精选六道木菩提根，手工雕刻紫薇讳符文。每颗珠子均刻有“紫薇讳”字样，搭配流苏，适合修行持诵或日常佩戴。',
+        price: '19.9',
+        files: [
+          { name: '1.jpg', type: 'image' },
+          { name: '2.jpg', type: 'image' },
+          { name: '3.jpg', type: 'image' }
+        ]
+      }
+    ];
+
+    const goodsGrid = document.getElementById('goodsGrid');
+    goodsGrid.innerHTML = '';
+    const currentIndices = {};
+
+    const modal = document.getElementById('qrModal');
+    const modalTitle = document.getElementById('modalGoodsTitle');
+    const mediaContainer = document.getElementById('qrMediaContainer');
+    const closeModalBtn = modal.querySelector('.close-modal');
+
+    function closeModal() {
+      modal.classList.remove('active');
+      mediaContainer.innerHTML = '';
+    }
+
+    function showQRCode(goodsItem) {
+      mediaContainer.innerHTML = '';
+      modalTitle.innerText = `${goodsItem.title} · 快手购买`;
+      
+      const id = goodsItem.id;
+      let qrImageSrc = null;
+      
+      if (id === 'shanguimoney') {
+        qrImageSrc = 'image/qrcode/shanguiflowermoney.png';
+      } else if (id === 'bracelet') {
+        qrImageSrc = 'image/qrcode/shouchi.png';
+      } else if (id === 'yellowpaper') {
+        qrImageSrc = 'image/qrcode/yellowpaper.png';
+      } else if (id === 'pinganfu') {
+        qrImageSrc = 'image/qrcode/smellgoodpackage.png';
+      }
+      
+      if (qrImageSrc) {
+        const img = document.createElement('img');
+        img.alt = `${goodsItem.title} 快手购买二维码`;
+        img.style.width = '260px';
+        img.style.height = '260px';
+        img.src = qrImageSrc;
+        img.onerror = () => fallbackToMockQR(goodsItem, mediaContainer);
+        mediaContainer.appendChild(img);
+      } else {
+        fallbackToMockQR(goodsItem, mediaContainer);
+      }
+      
+      modal.classList.add('active');
+    }
+
+    closeModalBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    goodsData.forEach(item => {
+      currentIndices[item.id] = 0;
+      const card = document.createElement('div');
+      card.className = 'goods-card';
+      
+      const titleHtml = `<h3><i class="${item.icon}"></i> ${item.title}</h3>`;
+      const descHtml = `<p>${item.desc}</p>`;
+      card.innerHTML = titleHtml + descHtml;
+      
+      const carousel = document.createElement('div');
+      carousel.className = 'carousel';
+      carousel.dataset.id = item.id;
+      
+      const firstFile = item.files[0];
+      const media = document.createElement(firstFile.type === 'video' ? 'video' : 'img');
+      media.className = 'carousel-media';
+      if (firstFile.type === 'video') {
+        media.controls = true;
+        media.src = `goodsimage/${item.id}/${firstFile.name}`;
+      } else {
+        media.src = `goodsimage/${item.id}/${firstFile.name}`;
+        media.alt = item.title;
+        // 图片加载失败时显示占位符
+        media.onerror = function() {
+          this.onerror = null;
+          this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect width="400" height="400" fill="%233d2b1f"/%3E%3Ctext x="50%25" y="50%25" font-size="20" fill="%23dbbc94" text-anchor="middle" dy=".3em"%3E图片待更新%3C/text%3E%3C/svg%3E';
+        };
+      }
+      carousel.appendChild(media);
+      
+      const indexSpan = document.createElement('span');
+      indexSpan.className = 'carousel-index';
+      indexSpan.textContent = `1 / ${item.files.length}`;
+      carousel.appendChild(indexSpan);
+      
+      if (item.files.length > 1) {
+        const leftArrow = document.createElement('div');
+        leftArrow.className = 'carousel-arrow left';
+        leftArrow.innerHTML = '&#10094;';
+        leftArrow.addEventListener('click', (e) => {
+          e.stopPropagation();
+          let current = currentIndices[item.id];
+          current = (current - 1 + item.files.length) % item.files.length;
+          currentIndices[item.id] = current;
+          const newFile = item.files[current];
+          const newMedia = document.createElement(newFile.type === 'video' ? 'video' : 'img');
+          newMedia.className = 'carousel-media';
+          if (newFile.type === 'video') {
+            newMedia.controls = true;
+            newMedia.src = `goodsimage/${item.id}/${newFile.name}`;
+          } else {
+            newMedia.src = `goodsimage/${item.id}/${newFile.name}`;
+            newMedia.alt = item.title;
+            newMedia.onerror = function() {
+              this.onerror = null;
+              this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect width="400" height="400" fill="%233d2b1f"/%3E%3Ctext x="50%25" y="50%25" font-size="20" fill="%23dbbc94" text-anchor="middle" dy=".3em"%3E图片待更新%3C/text%3E%3C/svg%3E';
+            };
+          }
+          const oldMedia = carousel.querySelector('.carousel-media');
+          oldMedia.replaceWith(newMedia);
+          indexSpan.textContent = `${current+1} / ${item.files.length}`;
+        });
+        carousel.appendChild(leftArrow);
+        
+        const rightArrow = document.createElement('div');
+        rightArrow.className = 'carousel-arrow right';
+        rightArrow.innerHTML = '&#10095;';
+        rightArrow.addEventListener('click', (e) => {
+          e.stopPropagation();
+          let current = currentIndices[item.id];
+          current = (current + 1) % item.files.length;
+          currentIndices[item.id] = current;
+          const newFile = item.files[current];
+          const newMedia = document.createElement(newFile.type === 'video' ? 'video' : 'img');
+          newMedia.className = 'carousel-media';
+          if (newFile.type === 'video') {
+            newMedia.controls = true;
+            newMedia.src = `goodsimage/${item.id}/${newFile.name}`;
+          } else {
+            newMedia.src = `goodsimage/${item.id}/${newFile.name}`;
+            newMedia.alt = item.title;
+            newMedia.onerror = function() {
+              this.onerror = null;
+              this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect width="400" height="400" fill="%233d2b1f"/%3E%3Ctext x="50%25" y="50%25" font-size="20" fill="%23dbbc94" text-anchor="middle" dy=".3em"%3E图片待更新%3C/text%3E%3C/svg%3E';
+            };
+          }
+          const oldMedia = carousel.querySelector('.carousel-media');
+          oldMedia.replaceWith(newMedia);
+          indexSpan.textContent = `${current+1} / ${item.files.length}`;
+        });
+        carousel.appendChild(rightArrow);
+      }
+      
+      card.appendChild(carousel);
+      
+      const priceElement = document.createElement('p');
+      priceElement.className = 'price';
+      priceElement.textContent = `¥ ${item.price}`;
+      card.appendChild(priceElement);
+      
+      const kuaishouBtn = document.createElement('button');
+      kuaishouBtn.className = 'kuaishou-btn';
+      kuaishouBtn.innerHTML = '<i class="fa-brands fa-snapchat"></i> 扫码至快手购买 <i class="fa-solid fa-qrcode"></i>';
+      kuaishouBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showQRCode(item);
+      });
+      card.appendChild(kuaishouBtn);
+      
+      goodsGrid.appendChild(card);
+    });
+  </script>
+</body>
+</html>
