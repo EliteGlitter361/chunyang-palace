@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>SYSTEM · 道枢圣殿 | 天下第一纯阳宫</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: '华文楷体', 'KaiTi', '宋体', 'SimSun', 'Times New Roman', serif;
+      background: #1c1610; min-height: 100vh; color: #e8dccc; padding: 1.5rem;
+      position: relative; overflow-x: hidden;
+      font-size: 1.05rem;
+    }
+    #dynamic-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; }
+    .texture-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: repeating-linear-gradient(45deg, rgba(200,180,150,0.02) 0px, rgba(200,180,150,0.02) 2px, transparent 2px, transparent 6px),
+                        repeating-linear-gradient(135deg, rgba(170,140,100,0.02) 0px, rgba(170,140,100,0.02) 2px, transparent 2px, transparent 6px);
+      pointer-events: none; z-index: -1;
+    }
+    .container {
+      max-width: 1300px; margin: 2rem auto; padding: 2rem 2.5rem;
+      background: rgba(20, 16, 12, 0.85); backdrop-filter: blur(8px);
+      border: 1px solid #8b7355; border-radius: 40px 12px 40px 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+    .top-bar {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1rem;
+      border-bottom: 1px solid #5f4d38;
+    }
+    .datetime { color: #dbbc94; font-size: 1.2rem; font-weight: bold; }
+    .btn-logout {
+      background: #b69062; border: none; padding: 0.5rem 1.3rem; border-radius: 40px;
+      font-family: inherit; font-size: 1.05rem; font-weight: bold; cursor: pointer;
+      transition: 0.2s; color: #1c1610;
+    }
+    .btn-logout:hover { background: #d1a775; transform: scale(1.02); }
+    .header { text-align: center; margin-bottom: 2rem; }
+    h1 { font-size: 3.2rem; font-weight: normal; color: #eedcc7; text-shadow: 4px 4px 0 #3f2e1d; }
+    .pure-yang { font-size: 1.8rem; color: #dbbc94; border-bottom: 1px dashed #8b7355; display: inline-block; }
+    .card { background: rgba(28,22,18,0.8); border-radius: 48px 12px 48px 12px; padding: 1.8rem; margin: 1.8rem 0; border: 1px solid #7a6246; }
+    .card h3 { font-size: 1.6rem; margin-bottom: 1rem; }
+    table { width: 100%; border-collapse: collapse; color: #e8dccc; font-size: 1rem; }
+    th, td { padding: 14px 10px; text-align: left; border-bottom: 1px solid #5f4d38; }
+    th { background: #2f271f; font-weight: bold; font-size: 1.05rem; }
+    .toggle-btn {
+      background: #2f271f; border: 1px solid #b69062; padding: 6px 14px; border-radius: 40px;
+      cursor: pointer; color: #e6c9a2; font-family: inherit; font-size: 0.95rem;
+    }
+    .toggle-btn.active { background: #b69062; color: #1c1610; font-weight: bold; }
+    .delete-btn { background: #8b3c2c; border: none; padding: 6px 14px; border-radius: 40px; cursor: pointer; color: white; font-size: 0.95rem; }
+    .create-form { margin-top: 2rem; background: rgba(28,22,18,0.6); padding: 1.8rem; border-radius: 32px; }
+    input, select {
+      background: #2f271f; border: 1px solid #6b553b; padding: 0.75rem 1rem;
+      border-radius: 48px; color: #f2e5d4; width: 100%; margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+    button { background: #b69062; border: none; padding: 0.7rem 1.4rem; border-radius: 40px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+    .alert { background: rgba(180,80,60,0.2); border-left: 5px solid #e6a177; padding: 0.7rem 1rem; border-radius: 32px; margin-bottom: 1rem; display: none; font-size: 1rem; }
+    label { font-size: 1rem; color: #dbbc94; display: block; margin-bottom: 0.3rem; }
+    .create-system-card {
+      text-align: center;
+    }
+    .create-system-card button {
+      width: 100%;
+    }
+    @media (max-width: 700px) { .container { padding: 1rem; } table, thead, tbody, th, td, tr { display: block; } th { display: none; } td { border: none; position: relative; padding-left: 50%; } td:before { content: attr(data-label); position: absolute; left: 10px; font-weight: bold; } }
+  </style>
+</head>
+<body>
+  <canvas id="dynamic-bg"></canvas>
+  <div class="texture-overlay"></div>
+
+  <div class="container" id="mainContainer">
+    <!-- 创建 system 模式 -->
+    <div id="createSystemPanel" style="display: none;">
+      <div class="header"><h1>初 开 道 统</h1><div class="pure-yang">立 SYSTEM 法主 · 镇守灵台</div></div>
+      <div id="createMsg" class="alert"></div>
+      <div class="card create-system-card">
+        <label>法主道号 <span style="color:#b69062;">(自定义用户名)</span></label>
+        <input type="text" id="sysUsername" autocomplete="off">
+        <label>设定道钥</label>
+        <input type="password" id="sysPassword" placeholder="至少8位">
+        <label>确认道钥</label>
+        <input type="password" id="sysConfirm" placeholder="再次输入">
+        <button id="doCreateSystem"><i class="fa-regular fa-floppy-disk"></i> 敕建 SYSTEM</button>
+      </div>
+      <div style="text-align:center; margin-top:1rem;">
+        <a href="index.html" style="color:#e6c9a2; font-size:1rem;"><i class="fa-regular fa-arrow-left"></i> 返回主页</a>
+      </div>
+    </div>
+
+    <!-- 正常管理面板 -->
+    <div id="managePanel" style="display: none;">
+      <div class="top-bar"><div class="datetime" id="liveDatetime"></div><button class="btn-logout" id="logoutBtn">退出登录</button></div>
+      <div class="header"><h1>⚡ SYSTEM · 道枢圣殿 ⚡</h1><div class="pure-yang">执掌天下道籍</div></div>
+      <div id="manageMsg" class="alert"></div>
+
+      <div class="card"><h3><i class="fa-regular fa-users"></i> 管理员名录</h3><div id="adminTable"></div></div>
+
+      <div class="card"><h3><i class="fa-regular fa-key"></i> 修改法钥</h3>
+        <input type="password" id="oldPwd" placeholder="原法钥">
+        <input type="password" id="newPwd" placeholder="新法钥（至少8位）">
+        <input type="password" id="confirmPwd" placeholder="确认新法钥">
+        <button id="changeSelfPwdBtn"><i class="fa-regular fa-pen-to-square"></i> 更新我的法钥</button>
+      </div>
+
+      <div class="create-form"><h3><i class="fa-regular fa-user-plus"></i> 创建新管理员</h3>
+        <input type="text" id="newUsername" placeholder="用户名">
+        <input type="password" id="newPassword" placeholder="密码（至少8位）">
+        <select id="newAuditPerm"><option value="1">审核权限：开启</option><option value="0">审核权限：关闭</option></select>
+        <button id="createAdminBtn"><i class="fa-regular fa-plus"></i> 创建</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '';
+    const token = localStorage.getItem('adminToken');
+    const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+
+    const createPanel = document.getElementById('createSystemPanel');
+    const managePanel = document.getElementById('managePanel');
+
+    // 动态背景（PC）
+    (function initBg() {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) return;
+      const canvas = document.getElementById('dynamic-bg');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w, h, time = 0;
+      function resize() { w = window.innerWidth; h = window.innerHeight; canvas.width = w; canvas.height = h; }
+      window.addEventListener('resize', resize);
+      resize();
+      const particles = Array.from({ length: 28 }, () => ({
+        x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.1,
+        baseRadius: 120 + Math.random() * 200, radius: 120 + Math.random() * 200, opacity: 0.05 + Math.random() * 0.1, phase: Math.random() * 100
+      }));
+      function draw() {
+        time += 0.02;
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.radius = p.baseRadius * (0.85 + 0.15 * Math.sin(time * 1.5 + p.phase));
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < -200) p.x = w + 200; if (p.x > w + 200) p.x = -200;
+          if (p.y < -200) p.y = h + 200; if (p.y > h + 200) p.y = -200;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          const grad = ctx.createRadialGradient(p.x, p.y, p.radius * 0.3, p.x, p.y, p.radius);
+          grad.addColorStop(0, `rgba(210, 180, 140, ${p.opacity * 1.2})`);
+          grad.addColorStop(1, `rgba(120, 90, 65, ${p.opacity * 0.5})`);
+          ctx.fillStyle = grad; ctx.filter = 'blur(48px)'; ctx.fill();
+        });
+        ctx.filter = 'none';
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    function updateDateTime() {
+      const now = new Date();
+      const year = now.getFullYear(), month = String(now.getMonth()+1).padStart(2,'0'), day = String(now.getDate()).padStart(2,'0');
+      const hours = String(now.getHours()).padStart(2,'0'), minutes = String(now.getMinutes()).padStart(2,'0'), seconds = String(now.getSeconds()).padStart(2,'0');
+      const weekdays = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+      const weekday = weekdays[now.getDay()];
+      const el = document.getElementById('liveDatetime');
+      if (el) el.textContent = `${year}年${month}月${day}日 ${hours}:${minutes}:${seconds} ${weekday}`;
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    function showMsg(divId, msg, isError = true) {
+      const div = document.getElementById(divId);
+      div.textContent = msg;
+      div.style.display = 'block';
+      div.style.borderLeftColor = isError ? "#e6a177" : "#7aa56e";
+      setTimeout(() => { div.style.display = 'none'; }, 4000);
+    }
+
+    async function init() {
+      if (mode === 'create') {
+        createPanel.style.display = 'block';
+        managePanel.style.display = 'none';
+        document.getElementById('doCreateSystem').addEventListener('click', createSystemAccount);
+        return;
+      }
+      if (token && user.role === 'system') {
+        createPanel.style.display = 'none';
+        managePanel.style.display = 'block';
+        await loadAdminList();
+        attachManageEvents();
+        return;
+      }
+      // 未登录或无权限，跳转登录
+      window.location.href = 'login.html';
+    }
+
+    async function createSystemAccount() {
+      const username = document.getElementById('sysUsername').value.trim();
+      const password = document.getElementById('sysPassword').value;
+      const confirm = document.getElementById('sysConfirm').value;
+      if (!username) { showMsg('createMsg', '请填写法主道号'); return; }
+      if (password.length < 8) { showMsg('createMsg', '密码至少8位'); return; }
+      if (password !== confirm) { showMsg('createMsg', '两次密码不一致'); return; }
+      try {
+        const res = await fetch(`${API_BASE}/api/system/init`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, confirmPassword: confirm })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || '创建失败');
+        showMsg('createMsg', '✅ SYSTEM 账户创建成功！即将跳转登录...', false);
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+      } catch (err) {
+        showMsg('createMsg', err.message);
+      }
+    }
+
+    async function loadAdminList() {
+      try {
+        const res = await fetch(`${API_BASE}/api/system/admins`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error('获取列表失败');
+        const admins = await res.json();
+        let html = '<table><thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>审核权限</th><th>操作</th></tr></thead><tbody>';
+        admins.forEach(u => {
+          html += `<tr>
+            <td data-label="ID">${u.id}</td>
+            <td data-label="用户名">${u.username}</td>
+            <td data-label="角色">${u.role}</td>
+            <td data-label="审核权限"><button class="toggle-btn ${u.auditPermission ? 'active' : ''}" data-username="${u.username}" data-current="${u.auditPermission}">${u.auditPermission ? '开启' : '关闭'}</button></td>
+            <td data-label="操作">${u.role !== 'system' ? `<button class="delete-btn" data-username="${u.username}">删除</button>` : '—'}</td>
+          </tr>`;
+        });
+        html += '</tbody></table>';
+        document.getElementById('adminTable').innerHTML = html;
+        // 绑定权限切换
+        document.querySelectorAll('.toggle-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const username = btn.dataset.username;
+            const current = btn.dataset.current === 'true' || btn.dataset.current === '1';
+            await fetch(`${API_BASE}/api/system/admins`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+              body: JSON.stringify({ username, auditPermission: current ? 0 : 1 })
+            });
+            loadAdminList();
+          });
+        });
+        // 绑定删除
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const username = btn.dataset.username;
+            if (confirm(`确定删除管理员 ${username} 吗？`)) {
+              await fetch(`${API_BASE}/api/system/admins?username=${username}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+              loadAdminList();
+            }
+          });
+        });
+      } catch (err) {
+        showMsg('manageMsg', err.message);
+      }
+    }
+
+    async function createAdmin() {
+      const username = document.getElementById('newUsername').value.trim();
+      const password = document.getElementById('newPassword').value;
+      const auditPermission = document.getElementById('newAuditPerm').value === '1' ? 1 : 0;
+      if (!username || !password) { showMsg('manageMsg', '请填写完整'); return; }
+      if (password.length < 8) { showMsg('manageMsg', '密码至少8位'); return; }
+      try {
+        const res = await fetch(`${API_BASE}/api/system/admins`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ username, password, auditPermission })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || '创建失败');
+        showMsg('manageMsg', '✅ 创建成功', false);
+        document.getElementById('newUsername').value = '';
+        document.getElementById('newPassword').value = '';
+        loadAdminList();
+      } catch (err) {
+        showMsg('manageMsg', err.message);
+      }
+    }
+
+    async function changeSelfPassword() {
+      const oldPwd = document.getElementById('oldPwd').value;
+      const newPwd = document.getElementById('newPwd').value;
+      const confirmPwd = document.getElementById('confirmPwd').value;
+      if (!oldPwd || !newPwd) { showMsg('manageMsg', '请填写原密码和新密码'); return; }
+      if (newPwd.length < 8) { showMsg('manageMsg', '新密码至少8位'); return; }
+      if (newPwd !== confirmPwd) { showMsg('manageMsg', '两次新密码不一致'); return; }
+      try {
+        const res = await fetch(`${API_BASE}/api/system/change-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ oldPassword: oldPwd, newPassword: newPwd })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || '修改失败');
+        showMsg('manageMsg', '✅ 法钥已更新，请重新登录', false);
+        setTimeout(() => {
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('adminUser');
+          window.location.href = 'login.html';
+        }, 2000);
+      } catch (err) {
+        showMsg('manageMsg', err.message);
+      }
+    }
+
+    function attachManageEvents() {
+      document.getElementById('createAdminBtn').addEventListener('click', createAdmin);
+      document.getElementById('changeSelfPwdBtn').addEventListener('click', changeSelfPassword);
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        window.location.href = 'login.html';
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>登录 · 天下第一纯阳宫</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: '华文楷体', 'KaiTi', '宋体', 'SimSun', 'Times New Roman', serif;
+      background: #1c1610;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #e8dccc;
+      padding: 1.5rem;
+      position: relative;
+      overflow-x: hidden;
+      font-size: 1.1rem;
+    }
+    #dynamic-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; pointer-events: none; display: block; }
+    .texture-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-image: repeating-linear-gradient(45deg, rgba(200,180,150,0.02) 0px, rgba(200,180,150,0.02) 2px, transparent 2px, transparent 6px),
+                        repeating-linear-gradient(135deg, rgba(170,140,100,0.02) 0px, rgba(170,140,100,0.02) 2px, transparent 2px, transparent 6px);
+      pointer-events: none; z-index: -1;
+    }
+    .login-card {
+      max-width: 550px; width: 100%;
+      background: rgba(20, 16, 12, 0.85); backdrop-filter: blur(12px);
+      border: 1px solid #8b7355; border-radius: 64px 20px 64px 20px;
+      padding: 2.2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .insignia i { font-size: 3.5rem; color: #dbbc94; margin-bottom: 0.5rem; }
+    h2 { font-size: 2.4rem; font-weight: normal; letter-spacing: 4px; margin-bottom: 0.2rem; }
+    .sub { border-bottom: 1px dashed #6b553b; display: inline-block; margin-bottom: 1.8rem; padding-bottom: 0.3rem; font-size: 1rem; }
+    .input-group { margin-bottom: 1.4rem; text-align: left; }
+    label { display: block; margin-bottom: 0.5rem; color: #dbbc94; font-size: 1.05rem; }
+    input {
+      width: 100%; background: #2f271f; border: 1px solid #6b553b; padding: 0.8rem 1.2rem;
+      border-radius: 48px; color: #f2e5d4; font-size: 1.05rem;
+    }
+    button {
+      width: 100%; background: #b69062; border: none; padding: 0.8rem; border-radius: 60px;
+      font-size: 1.2rem; font-weight: bold; color: #1c1610; cursor: pointer; margin-top: 0.5rem;
+      transition: 0.2s;
+    }
+    button:hover { background: #d1a775; transform: translateY(-2px); }
+    .alert { background: rgba(180,80,60,0.2); border-left: 5px solid #e6a177; padding: 0.7rem 1rem; border-radius: 32px; margin-bottom: 1rem; font-size: 1rem; }
+    .hidden { display: none; }
+    .loading { text-align: center; padding: 1rem; font-size: 1.1rem; color: #dbbc94; }
+    .info-note { font-size: 0.85rem; margin-top: 1.2rem; color: #b69062; }
+    .back-home { margin-top: 1rem; }
+    .back-home a { color: #e6c9a2; text-decoration: none; border-bottom: 1px dotted; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <canvas id="dynamic-bg"></canvas>
+  <div class="texture-overlay"></div>
+
+  <div class="login-card">
+    <div class="insignia"><i class="fa-regular fa-circle-dot"></i></div>
+    <h2>纯阳登真</h2>
+    <div class="sub">天下第一纯阳宫 · 执事鉴</div>
+
+    <div id="loadingMsg" class="loading">⏳ 炁运周转，请稍候...</div>
+
+    <div id="loginForm" style="display: none;">
+      <div id="loginMsg" class="alert hidden"></div>
+      <div class="input-group">
+        <label><i class="fa-regular fa-user"></i> 道号</label>
+        <input type="text" id="username" placeholder="system / admin" autocomplete="off">
+      </div>
+      <div class="input-group">
+        <label><i class="fa-regular fa-key"></i> 法钥</label>
+        <input type="password" id="password" placeholder="••••••">
+      </div>
+      <button id="loginBtn"><i class="fa-regular fa-arrow-right-to-bracket"></i> 登入纯阳</button>
+      <div class="back-home"><a href="index.html"><i class="fa-regular fa-arrow-left"></i> 返回主页</a></div>
+      <div class="info-note">道脉中枢 · 权分 SYSTEM / ADMIN</div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '';
+
+    async function checkAndRedirect() {
+      try {
+        const res = await fetch(`${API_BASE}/api/system/check`);
+        const data = await res.json();
+        if (!data.exists) {
+          // 没有 system 账户，自动跳转到创建页面
+          window.location.href = 'SystemControlPanel.html?mode=create';
+        } else {
+          // 已有 system 账户，显示登录表单
+          document.getElementById('loadingMsg').style.display = 'none';
+          document.getElementById('loginForm').style.display = 'block';
+        }
+      } catch (e) {
+        // 网络错误时也尝试显示登录表单（让用户手动创建？但这里还是建议跳转）
+        console.warn(e);
+        document.getElementById('loadingMsg').innerHTML = '⚠️ 无法连接道枢，请稍后重试<br><a href="SystemControlPanel.html?mode=create" style="color:#e6c9a2;">手动创建 SYSTEM</a>';
+      }
+    }
+
+    async function handleLogin() {
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      if (!username || !password) {
+        showMsg("请填写道号与法钥");
+        return;
+      }
+      try {
+        const res = await fetch(`${API_BASE}/api/auth`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showMsg(data.error || "道号或法钥错误");
+          return;
+        }
+        localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('adminUser', JSON.stringify(data.user));
+        if (data.user.role === 'system') {
+          window.location.href = 'SystemControlPanel.html';
+        } else {
+          window.location.href = 'AdminPanel.html';
+        }
+      } catch (err) {
+        showMsg("网络错误，请确保后端已启动: " + err.message);
+      }
+    }
+
+    function showMsg(msg) {
+      const div = document.getElementById('loginMsg');
+      div.textContent = msg;
+      div.classList.remove('hidden');
+      setTimeout(() => div.classList.add('hidden'), 3500);
+    }
+
+    // 动态背景（PC）
+    (function initBg() {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) return;
+      const canvas = document.getElementById('dynamic-bg');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w, h, time = 0;
+      function resize() { w = window.innerWidth; h = window.innerHeight; canvas.width = w; canvas.height = h; }
+      window.addEventListener('resize', resize);
+      resize();
+      const particles = Array.from({ length: 28 }, () => ({
+        x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.1,
+        baseRadius: 120 + Math.random() * 200, radius: 120 + Math.random() * 200, opacity: 0.05 + Math.random() * 0.1, phase: Math.random() * 100
+      }));
+      function draw() {
+        time += 0.02;
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach(p => {
+          p.radius = p.baseRadius * (0.85 + 0.15 * Math.sin(time * 1.5 + p.phase));
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < -200) p.x = w + 200; if (p.x > w + 200) p.x = -200;
+          if (p.y < -200) p.y = h + 200; if (p.y > h + 200) p.y = -200;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          const grad = ctx.createRadialGradient(p.x, p.y, p.radius * 0.3, p.x, p.y, p.radius);
+          grad.addColorStop(0, `rgba(210, 180, 140, ${p.opacity * 1.2})`);
+          grad.addColorStop(1, `rgba(120, 90, 65, ${p.opacity * 0.5})`);
+          ctx.fillStyle = grad; ctx.filter = 'blur(48px)'; ctx.fill();
+        });
+        ctx.filter = 'none';
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    document.getElementById('loginBtn').addEventListener('click', handleLogin);
+    document.getElementById('password').addEventListener('keypress', (e) => { if(e.key === 'Enter') handleLogin(); });
+    checkAndRedirect();
+  </script>
+</body>
+</html>
